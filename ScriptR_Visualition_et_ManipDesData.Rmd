@@ -1,0 +1,290 @@
+---
+title: "ScriptR_Visualition_et_ManipDesData"
+output: html_document
+---
+
+### Exercice sur la manipulation de vecteur 
+```{r setup}
+moyenne_de_classe=sample(1:20,4)
+names(moyenne_de_classe)=c("lala", "ouZ","epek", "eylul")
+moyenne_de_classe
+length(moyenne_de_classe)
+moyenne_génerale=mean(moyenne_de_classe)
+mauvaise_note=min(moyenne_de_classe)
+meilleure_note=max(moyenne_de_classe)
+eleve_sup_moy_general=moyenne_de_classe[moyenne_de_classe>moyenne_génerale]
+table_recaputilatif=c(moyenne_génerale,mauvaise_note,meilleure_note,
+                      length(eleve_sup_moy_general))
+table_recaputilatif
+names(table_recaputilatif)= c("moyenne", "mauvaise note", "meilleur note", "nombre d'étudiant ayant une note supérieur à 10")
+table_recaputilatif
+moyenne_de_classe[moyenne_de_classe==meilleure_note]
+sort(moyenne_de_classe,decreasing = TRUE)
+summary(moyenne_de_classe)
+```
+
+### Matrice En R 
+```{r cars}
+notes=sample(1:20,15)
+notes
+matrix(notes, ncol = 3,nrow = 5)
+matrix(notes, ncol=3,nrow = 5, byrow = TRUE)
+notes_eleve=matrix(notes, ncol = 3, nrow = 5)
+colnames(notes_eleve)= c("SVT", "math","français")
+rownames(notes_eleve)=c("lala", "eva", "boba", "lina","poki")
+```
+### Acceder aux éléments d'une matrice 
+```{r}
+notes_eleve
+notes_eleve[1,]
+notes_eleve[,1]
+notes_eleve[2,2]
+notes_eleve[1,c(2,3)]
+notes_eleve[3,c(1,2,3)]
+notes_eleve[1,1:3]
+notes_eleve["lala","math"]
+notes_eleve[c("lala","eva"),c("math","français")]
+
+```
+
+### modifier les éléments d'une matrice 
+```{r}
+
+notes_eleve[c("lala","eva"), "français"]= c(14,13)
+notes_eleve
+
+
+
+```
+
+### Opérations sur les matrices 
+```{r}
+notes_2=c(rep(0.5,times=5),rep(1,times=5),rep(2,times=5))
+notes_2
+matrice_des_notes=matrix(notes_2, ncol = 3, nrow = 5)
+matrice_des_notes
+
+notes_eleve * matrice_des_notes
+notes_eleve + matrice_des_notes
+notes_eleve / matrice_des_notes
+notes_eleve - matrice_des_notes
+
+rowSums(notes_eleve)
+colSums(notes_eleve)
+rowMeans(notes_eleve)
+colMeans(notes_eleve)
+```
+
+##Exercice 
+```{r}
+library(Stat2Data)
+
+data("HorsePrices")
+
+matrice_PrixCheval=as.matrix(HorsePrices[,-c(1,5)])
+rownames(matrice_PrixCheval)=HorsePrices[,1]
+colnames(matrice_PrixCheval)=c("prix","age","taille")
+
+##je sais que 1 hand fait 0,1016 mètre 
+matrice_PrixCheval[,3]=matrice_PrixCheval[,3]*0.1016
+
+## je sais que 1 dollars fait 0.86 euros 
+matrice_PrixCheval[,1]=matrice_PrixCheval[,1]*0.86
+
+length(matrice_PrixCheval)
+dim(matrice_PrixCheval)
+summary(matrice_PrixCheval)
+matrice_PrixCheval=na.omit(matrice_PrixCheval)
+dim(matrice_PrixCheval)
+
+matrice_PrixCheval[matrice_PrixCheval[,1]==946,]
+matrice_PrixCheval[matrice_PrixCheval[,1]==51600,]
+matrice_PrixCheval[matrice_PrixCheval[,1]==946,]=c(2500,19,1.67)
+matrice_PrixCheval[matrice_PrixCheval[,1]==2500,]
+matrice_PrixCheval[matrice_PrixCheval[,1]>23082,]
+dim(matrice_PrixCheval[matrice_PrixCheval[,1]>23082,])
+dim(matrice_PrixCheval[matrice_PrixCheval[,3]>1.659,])
+colMeans(matrice_PrixCheval[matrice_PrixCheval[,3]>1.6,])
+colMeans(matrice_PrixCheval[matrice_PrixCheval[,3]<=1.6,])
+colSums(matrice_PrixCheval)
+```
+
+### data frame: tableau de données 
+```{r}
+dataframe=data.frame(c(18,6,45,78), c(65,84,76,62), c("F","M","M","F"), c(TRUE,TRUE,FALSE,TRUE))
+colnames(dataframe)=c("age","poids","sex","Ma_var_booléene")
+rownames(dataframe)=c("eva","tata","rita","rima")
+dataframe
+
+
+
+```
+
+### Accéder aux éléments d'un data frame
+```{r}
+  
+data_iris<-iris
+data_iris[,1]
+data_iris[,c(1:3)]
+head(data_iris[,c(1:3)])
+data_iris[c(1,50,60),c(1:3)]
+
+data_iris
+data_iris[,1]
+data_iris[,c(1:3)]
+head(data_iris[,c(1:3)])
+data_iris[c(1,47,34),c(1:3)]
+data_iris[c(1,34,47),c("Sepal.Length", "Petal.Length")]
+data_iris$Sepal.Length
+
+```
+
+### Créer des sous-ensemble d'un data frame 
+
+```{r}
+
+data_iris[data_iris$Species=="setosa",]
+data_iris[which(data_iris$Species=="setosa"),]
+dim(data_iris[data_iris$Species=="virginica",])
+data_iris[which(data_iris$Species=="setosa"& data_iris$Petal.Length==1.4),]
+data_iris[data_iris$Species %in% c("setosa"),]
+
+data_iris[data_iris$Species=="setosa",]
+data_iris[which(data_iris$Species=="setosa"),]
+data_iris[data_iris$Species %in% c("setosa"),]
+subset(data_iris, Species=="setosa"& Petal.Length==1.4 ,select=c("Petal.Length"))
+
+```
+
+## facteur
+```{r}
+class(data_iris$Species)
+head(data_iris$Species)
+rownames(data_iris)=paste("iris-",rownames(data_iris),sep = " ")
+colnames(data_iris)=c("Longueur des sepales","largeur des sepales","longueur des petales","largeur des petals","Espece")
+summary(data_iris)
+min(data_iris[data_iris$Espece =="setosa",3])
+mean(data_iris[data_iris$Espece =='virginica',3])
+
+class(iris$Species)
+head(iris$Species)
+rownames(iris) = paste("iris-",rownames(iris), sep = "")
+colnames(iris) = c("longueur des sepals", "largeur des sepals","longueur des petals", "largeur des petals", "Espece")
+summary(iris)
+min(iris[iris$Espece=="setosa",3])
+mean(iris[iris$Espece=="virginica","longueur des petals"])
+
+data_iris_quali=as.data.frame(data_iris[,c(5)])
+data_iris_quali
+data_iris_quanti=data_iris[,c(1:4)]
+
+
+iris_complet=merge(data_iris_quanti,data_iris_quali,by="row.names")
+rownames(iris_complet)= iris_complet[,1]
+iris_complet= iris_complet[,-1]
+
+```
+
+### Conditions 
+```{r}
+if(5<3 & 2<3){
+  print("ok")
+} else{
+  print("pas ok")
+}
+
+
+if(5==3 | 2<3){
+  print("ok")
+} else{
+  print("pas ok")
+}
+```
+
+### Boucles 
+
+```{r}
+for (valeur in c(1,2,3,4,5,6)) {
+  print(valeur+1)
+}
+
+
+for (valeur in c(1,2,3,4,5,6)) {
+  print(paste("numero:" ,valeur+1))
+}
+
+for (element in c(1,2,3,4,5,6)) {
+  if (element>1 & element<5){
+    print(element)
+  }
+}
+
+## instructions de boucle While 
+valeur=200
+while (valeur/5>1) {
+  valeur=valeur/5
+  print(valeur)
+}
+```
+
+### Exo: combien d'individu dans le tableau
+
+```{r}
+## combien de personne qui ont une longueur de sépale >5cm??
+data(iris)
+compteur_individu_sepal_sup_5=0
+for (length in iris$Sepal.Length) {
+  if(length>=5){
+    compteur_individu_sepal_sup_5=compteur_individu_sepal_sup_5 +1
+  }
+}
+print(paste("le nombre de membre est :", compteur_individu_sepal_sup_5))
+
+
+## combien y a t-il d'éspèce dans ce jeu de données ??
+cp_setosa=0
+cp_virginica=0
+cp_versicolor=0
+for (espece in iris$Species) {
+  if(espece=="setosa"){
+    cp_setosa=cp_setosa+1
+  } else
+    if(espece=="virginica"){
+      cp_virginica=cp_virginica+1
+    }else
+      if(espece=="versicolor"){
+        cp_versicolor=cp_versicolor+1
+      }
+}
+print(paste("le nombre d'éspece setosa est :", cp_setosa))
+print(paste("le nombre d'éspece virginica est :", cp_virginica))
+print(paste("le nombre d'éspece versicolor est :", cp_versicolor))
+
+#parcourir le data frame par ligne  
+dim(iris)
+nb_setosa_sepal_sup_5=0
+for (ligne in 1:dim(iris)[1]) {
+  individu=iris[ligne,]
+  if(individu$Species=="setosa" & individu$Sepal.Length >=5){
+    nb_setosa_sepal_sup_5=nb_setosa_sepal_sup_5+1
+  }
+}
+print(paste("le nombre de setosa est : ",nb_setosa_sepal_sup_5))
+```
+
+### fonction
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+
+
+
