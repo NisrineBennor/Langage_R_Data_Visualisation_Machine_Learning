@@ -1,5 +1,6 @@
 ---
 title: "ScriptR_Visualition_et_ManipDesData"
+author: "Nisrine Bennor"
 output: html_document
 ---
 
