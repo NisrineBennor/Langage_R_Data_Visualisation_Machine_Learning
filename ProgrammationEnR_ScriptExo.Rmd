@@ -10,7 +10,7 @@ output: html_document
 
 
 ### Appeler les librairies 
-```{r}
+```{r, include=FALSE}
 library(dplyr)
 library(ggplot2)
 library(plotly)
@@ -41,7 +41,7 @@ summary(moyenne_de_classe)
 ```
 
 ### Matrice En R 
-```{r cars}
+```{r}
 notes=sample(1:20,15)
 notes
 matrix(notes, ncol = 3,nrow = 5)
@@ -93,9 +93,12 @@ colMeans(notes_eleve)
 ```
 
 ##Exercice 
-```{r}
+```{r include=FALSE}
 library(Stat2Data)
+```
 
+
+```{r}
 data("HorsePrices")
 
 matrice_PrixCheval=as.matrix(HorsePrices[,-c(1,5)])
@@ -320,6 +323,5 @@ moyenne_espece(iris)
 
 
 ```
-
-### Manipuler des données 
+ 
 ```{r}

@@ -1,0 +1,262 @@
+---
+title: "ManipulationAvancéeEnR"
+author: "Nisrine Bennor" 
+output: html_document
+---
+
+```{r}
+### Appeler les librairies
+```
+
+
+```{r, include=FALSE}
+library(dplyr)
+```
+
+
+```{r, include=FALSE}
+library(ggplot2)
+library(plotly)
+library(caret)
+library(e1071)
+library(rpart)
+library(randomForest)
+```
+
+
+```{r}
+data(iris)
+head(iris)
+
+## calculer la moyenne des 4 variables du data frame "iris"
+apply(iris[,-5], 2, mean)
+```
+
+```{r}
+## calculer la distribution du jeu de données "iris"
+apply(iris[,-5], 2, summary)
+```
+
+```{r}
+## Nombre de valeurs supérieures à 5 
+Nb_Val_Sup_5 <- function(dataframe){
+  length(dataframe[dataframe>5])
+}
+apply(iris[,-5],2, Nb_Val_Sup_5)
+```
+
+
+```{r}
+##Calculer la distribution en fonction de l'éspèce 
+by(iris, iris$Species, summary)
+```
+
+```{r}
+## Calculer la matrice de corrélation 
+by(iris[,-5], iris$Species, cor)
+```
+
+```{r}
+## Calculer la moyenne
+aggregate(iris[,-5], as.data.frame(iris$Species), mean)
+```
+
+#### Dplyr
+```{r include=FALSE}
+library(dplyr)
+```
+
+```{r}
+## sélectionner les colonnes 
+data_iris=as_tibble(iris)
+select(iris,Sepal.Length,Sepal.Width,Species)
+select(iris,Sepal.Length:Species)
+
+## Enlever la dernière colonne du jeu de données "data_iris"
+select(data_iris, -Species)
+
+##selectionner les colonnes qui commencent par Pétal 
+select(iris, starts_with("Petal"))
+
+##selectionner les colonnes qui commencent par Sépal 
+select(iris, starts_with("Sepal"))
+
+##selectionner les colonnes qui ne commencent pas par Sépal 
+select(iris, -starts_with("Sepal"))
+
+##selectionner les colonnes qui terminent par Length 
+select(iris, ends_with("Length"))
+
+##selectionner les colonnes qui terminent par  Width
+select(iris, ends_with("Width"))
+
+##selectionner une variable qui contient "al" 
+select(iris, contains("al"))
+
+##selectionner les colonnes qui contient "ies"
+select(iris, contains("ies"))
+```
+
+#### filter le tibbles surles individus  
+```{r}
+## Selectionner les individus qui ont de grandes pétales 
+filter(iris, Sepal.Length>=5,Sepal.Width>=2,Species=="setosa")
+
+## Selectionner les individus qui ont une longueur des pétales comprise entre 2 valeurs 
+filter(iris, between(Petal.Length,4,7))
+
+## Selectionner les individus qui sont sous espèce "setosa"
+filter(iris,Species=="setosa")
+
+## Selectionner les individus qui sont différents de l'espèce "setosa"
+filter(iris, Species!="setosa")
+
+## Selectionner les individus qui sont sous espèce "setosa" et "virginica:2 groupes 
+
+filter(iris, Species %in% c("setosa","virginica"))
+filter(iris, Species=="setosa" | Species=="virginica")
+
+## filtrer sur toutes les variables 
+filter_all(iris[,-5], any_vars(.>5))
+
+## filtrer sur toutes les variables 
+filter_all(iris[,-5],all_vars(.>2))
+
+
+iris %>% 
+  select(Petal.Length,Petal.Width,-Species) %>% 
+  filter_all(all_vars(.>2))
+```
+
+
+```{r}
+##ordonner les valeurs de la longueurs de sépales 
+iris %>% 
+  arrange(Sepal.Length)
+
+##ordonner les valeurs de la longueurs de sépales de façon décroissante 
+iris %>% 
+  arrange(desc(Sepal.Length))
+
+##ordonner les valeurs de la longueurs de sépales et de pétales 
+iris %>% 
+  arrange(Sepal.Length,Petal.Length)
+
+## trier en ordre croissant la longueur et la largeur des Pétals d l'éspece sétosa
+iris %>%
+  select(Petal.Length, Petal.Width, Species)%>%
+  filter(Species=="setosa")%>%
+  arrange(Petal.Length,Petal.Width)
+```
+
+## résumé statistique 
+
+```{r}
+iris %>% 
+  summarise(moyenne=mean(Sepal.Length),
+            Min=min(Petal.Length),
+            Max= max(Petal.Length),
+            total= n())
+
+iris %>%  
+  summarise_each(funs(mean,sum),Sepal.Length,Petal.Length)
+
+
+```
+
+#### spliter le jeu de données iris
+```{r}
+iris %>% 
+  group_by(Species) %>% 
+  summarise(moyenne=mean(Petal.Length),
+            Min=min(Petal.Length),
+            Max= max(Petal.Length),
+            total= n())
+
+
+iris %>% 
+  group_by(Species) %>% 
+  filter(Petal.Length>5)%>%
+  summarise(n())
+  
+```
+
+### modifier les variables 
+```{r}
+## ajouter la longueur et la largeur les pétales et des sépales en créant une nouvelle variables dans "iris"   
+iris %>% 
+  mutate(somme_longueur_largeur_Petal= Petal.Length + Petal.Width,
+         somme_longueur_largeur_Sepal=Sepal.Length + Sepal.Width)
+
+## supprimer la variable Species 
+iris %>% 
+  mutate(Species=NULL)
+
+## multilplier *2 la longueurs des pétales: modification de valeur  
+iris %>% 
+  mutate(Sepal.Length=Sepal.Length*2)
+
+```
+
+### Exo Fast Food 
+
+```{r}
+### Exercice
+FastFood<- read.csv2("FastFoodRestaurants.csv", sep = ",")
+FastFood=as_tibble(FastFood)
+dim(FastFood)
+
+## Quelles sont les 5 villes qui ont plus de fast food aux USA??
+FastFood %>%
+  group_by(city) %>%
+  summarise(Nb_restaurants=length(city)) %>%
+  arrange(desc(Nb_restaurants)) %>%
+  head(n=5)
+  
+## Quelles sont les fast food les plus presents dans les 5 villes??
+## Combien de fast food au total sans ces villes là??? 
+city_list=FastFood %>%
+  group_by(name,city) %>%
+  summarise(Nb_restaurants=length(city)) %>%
+  arrange(desc(Nb_restaurants))%>%
+  head(n=5) %>%  
+  pull(city)
+
+FastFood %>%
+  filter(city %in% city_list)
+
+## Quels sont les fast food avec le plus de restaurants desn les 5 villes ? 
+
+FastFood %>%
+  filter(city %in% city_list)%>%
+  group_by(name) %>%
+  summarise(Nb_fastFood=length(name)) %>%
+  arrange(desc(Nb_fastFood))
+
+## Quels  sont les fast food avec le plus grands nombre de restaurant aux USA??
+FastFood %>%
+  group_by(name) %>%
+  summarise(Nb_fastFood=length(name)) %>%
+  arrange(desc(Nb_fastFood))
+
+## Dans quelles villes il y a plus de McDonald's??
+FastFood %>%
+  group_by(city) %>%
+  filter(name=="McDonald's")%>%
+  summarise(Nb_fastFood=length(city)) %>%
+  arrange(desc(Nb_fastFood))
+
+## Où se trouve =new-York par rapport aux 5 villes avec le plus de fast food??
+FastFood %>%
+  group_by(city) %>%
+  filter(city=="New York")%>%
+  summarise(Nb_fastFood=length(city))
+
+## Quels sont les fast food les plus fréquents à New York???
+FastFood %>%
+  group_by(name) %>%
+  filter(city=="New York")%>%
+  summarise(Nb_fastFood=length(name))%>%
+  arrange(desc(Nb_fastFood))
+```
+
