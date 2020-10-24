@@ -1,0 +1,201 @@
+---
+title: "VisualisationEnR"
+author: "Nisrine Bennor" 
+output: html_document
+---
+
+```{r}
+### Appeler les librairies
+```
+
+```{r , include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(caret)
+library(e1071)
+library(rpart)
+library(randomForest)
+```
+
+### Plot 
+```{r}
+data(iris)
+plot(iris$Sepal.Length,iris$Sepal.Width)
+
+plot(iris$Sepal.Length,iris$Sepal.Width,xlab = "longueur des sepales",ylab = "largeur des sepales")
+
+plot(iris$Petal.Length,iris$Petal.Width,xlab = "longueur des petales",ylab = "largeur des petales",col="red")
+lines(iris$Sepal.Length,iris$Sepal.Width,xlab = "longueur des sepales",ylab = "largeur des sepales",col="skyblue1",type = "p")
+
+plot(iris$Sepal.Length,iris$Sepal.Length,xlab = "longueur ",ylab = "largeur",col="red",xlim=c(min(iris$Sepal.Length,iris$Petal.Length),             max(iris$Sepal.Length,iris$Petal.Length)), 
+ylim = c(min(iris$Sepal.Width,iris$Petal.Width),max(iris$Sepal.Width,iris$Petal.Width)))
+lines(iris$Petal.Length,iris$Petal.Width,col="skyblue1",type = "p", pch=22)
+title(main = "longueur en fonction de la largeur", col="blue")
+legend(1, 4.2, c("sépale","Pétale"), col=c("red", "skyblue1"), pch=21:22 )
+```
+
+### Graphique avec ggplot2
+
+```{r}
+ggplot(iris,aes(x=Petal.Length,y=Petal.Width))+geom_point()
+
+## couleur selon l'espéce 
+ggplot(iris,aes(x=Petal.Length,y=Petal.Width,color=Species))+
+geom_point()
+
+## couleur et forme de points differents selon l'éspece selon l'espéce 
+g<-ggplot(iris,aes(x=Petal.Length,y=Petal.Width,color=Species,shape=Species))+
+geom_point(size=3)
+g
+
+## Gradient de couleur pour une variable continue:Petal.Length
+g<-ggplot(iris,aes(x=Petal.Length,y=Petal.Width,color=Petal.Length,shape=Species))+
+geom_point(size=3)+scale_color_gradient(low = "blue",high = "red")
+g
+
+## Modifier la légende et cacher son titre
+g<-g + theme_minimal()+ theme(legend.position = "top")+
+ theme(legend.title=element_blank())
+g
+
+
+## Modifier couleur, texture, taille du titre de la légende 
+g<-g + theme_minimal()+theme(legend.title = element_text(colour = "red",size = 9,face = "bold"))
+g  
+
+## Modifier  couleur, texture, taille des labels de la légende 
+g<-g+theme(legend.text = element_text(size =9,face = "bold.italic"))
+g  
+  
+## ajouter un cadre à mon légende
+g<-g+theme(legend.background = element_rect(fill="lavenderblush",colour="lightpink2",size=1,linetype = "dotted"))
+g
+```
+
+
+```{r}
+#### axes et titres
+
+### Modification des noms des axes et ajouts de titre 
+g<-g+xlab("longueur de petales")+ylab("largeur de petales")+ggtitle("Longeur en fonction de la largeur de petales")+theme(plot.title=element_text(colour="navyblue",size =15,face = "bold"))+theme(axis.title=element_text(colour="navyblue",size =10,face = "bold"))
+g
+
+## Modification de la taille des axes 
+g<- g+theme(axis.text = element_text(colour="navyblue", size=8,face = "bold",angle = 45))
+g
+
+## Tracé des axes 
+g<-g+theme(axis.line = element_line(size = 1,linetype = "dotted",colour = "navyblue"))
+g
+
+## Les graphiques séparées selon les espéces 
+g+facet_wrap(~Species)+facet_wrap(~Species, ncol = 1)
+
+
+## modifier le texte 
+g+facet_wrap(~Species)+theme(strip.text = element_text(colour="navyblue", size=10,face = "bold"))+ theme(strip.background = element_rect(color = "navyblue", size=1, linetype="solid"))
+
+     
+```
+
+#### Rajouter des annotations à mon graphe 
+```{r}
+ggplot(iris,aes(x=Petal.Length,y=Petal.Width))+geom_point()
+
+## couleur selon l'espéce 
+ggplot(iris,aes(x=Petal.Length,y=Petal.Width,color=Species))+
+  geom_point()
+
+## couleur et forme de points differents selon l'éspece selon l'espéce 
+g<-ggplot(iris,aes(x=Petal.Length,y=Petal.Width,color=Species,shape=Species))+
+  geom_point(size=3)
+g
+## Gradient de couleur pour une variable continue:Petal.Length
+g<-ggplot(iris,aes(x=Petal.Length,y=Petal.Width,color=Petal.Length,shape=Species))+
+  geom_point(size=3)+scale_color_gradient(low = "blue",high = "red")
+g
+g <-g+annotate("text",x =c(2,4,6), y=0.7 , label=c("setosa", "versocolor", "virginica"), colour="blue", size=3, fontface="bold")
+g
+
+
+### encadrer le groupe setosa
+g+ annotate("rect", xmin=0.5, xmax = 2.1, ymin = 0, ymax = 0.7, alpha=0.2, colour="blue", size=0.3)
+
+### ajouter un segement 
+g+ annotate("segment", x=0.5, xend = 4, y=1.5, yend=0, colour="blue", size=2, alpha=0.5)
+
+```
+
+### Histogramme des données iris 
+
+```{r}
+### Histogramme de la distribution de la longueur des pétales en fonction des expéces
+ggplot(iris,aes(x=Petal.Length, fill=Species))+ geom_histogram(binwidth = 0.5, color="white")
+```
+
+### Boxplot des données iris 
+
+```{r}
+ggplot(iris,aes(x=Species,y=Petal.Length,fill=Species))+geom_boxplot()+ 
+ggtitle("boxplot de la longeur des petales selon l'espece")+xlab("espece")+
+ylab("longueur des petales")+ theme(plot.title=element_text(colour="navyblue",size =15,face = "bold"))+theme(axis.title=element_text(colour="navyblue",size =10,face = "bold"))
+```
+### Visualisation graphique du jeu de données FastFood
+
+```{r}
+library("ggplot2")
+library("dplyr")
+
+## Appeller jeu de données
+FastFood<- read.csv2("FastFoodRestaurants.csv", sep=",")
+FastFood= as_tibble(FastFood)
+
+
+## les 10 villes qui ont plus de restaurants de fast food  
+city_list=FastFood %>% 
+group_by(city) %>% 
+summarise(ville_plus_de_restaurants=length(city)) %>% 
+arrange(desc(ville_plus_de_restaurants)) %>% 
+head(n=10) %>% 
+pull(city)
+     
+villes_10_fastfood=FastFood %>% 
+filter(city %in% city_list)
+     
+## les 10 fast food les plus présents dans ces 10 villes     
+name_fastfood_list=villes_10_fastfood %>% 
+       group_by(name) %>% 
+       summarise(ville_plus_de_restaurants=length(name)) %>% 
+       arrange(desc(ville_plus_de_restaurants)) %>% 
+       head(n=10) %>% 
+       pull(name)
+     
+name_fastfood_10list=villes_10_fastfood %>% 
+  filter(name %in% name_fastfood_list)
+     
+name_fastfood_10list
+     
+
+### Barplot du FastFood qui représente les 10 fast food dans les 10 villes 
+pdf("fastfood.pdf")
+g<-ggplot(name_fastfood_10list,aes(x=city,fill=name))+geom_bar()+theme_minimal()+
+ggtitle("Les 10 fastfoods les plus présent \n dans les 10 villes")+
+xlab("villes de fastFood")+ylab("les 10 resto les plus implantés")+
+theme(axis.text = element_text(angle = 50,size=7))+
+theme(plot.title = element_text(hjust = 0.5))+
+ylim(0,100)+theme(legend.title = element_blank())+
+scale_fill_brewer(palette = "Paired")
+dev.off()
+g
+
+```
+
+### Rendre mon graphe interactif 
+
+```{r}
+#rendre mon praphe interactif
+library(plotly)
+ggplotly(g)
+
+```
