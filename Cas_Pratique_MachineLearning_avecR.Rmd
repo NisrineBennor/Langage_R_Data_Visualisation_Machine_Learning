@@ -198,7 +198,7 @@ head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
 ### Modèle SVM
 
 ```{r}
-#modelication du jeu de donnée avec SVM(données deséquilibrées)
+#modélisation du jeu de donnée avec SVM(données deséquilibrées)
 set.seed(3033)
 trainControl_data=trainControl(method = "repeatedcv", number = 10,repeats = 5)
 SVM_desequilibree=train(souscription ~., data=data_bank_entrainement_scaled, method="svmLinear", preProcess=NULL)
@@ -222,7 +222,7 @@ head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
 varImp(naives_bayes_downsample, scale = F)
 
 ### la durée d'appel est une variable qui joue sur la souscription
-### parésens de crédit d emaoson ou non.....
+### par présence de crédit de maison ou non.....
 ### donc il existe plusieurs variables. 
 ```
 
