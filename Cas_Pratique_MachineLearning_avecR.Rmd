@@ -16,7 +16,7 @@ library(e1071)
 library(rpart)
 library(randomForest)
 ```
-On cherche à comprendre quels les élements qui font qu'un client accepte d'investir dans la banque 
+On cherche à comprendre quels sont les élements qui font qu'un client accepte d'investir dans la banque. 
 
 ### Lecture de fichier de donnée
 ```{r}
