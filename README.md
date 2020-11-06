@@ -13,3 +13,5 @@ Il existe aussi un cas pratique de machine learning( Apprentissage supervisé) e
 ### **Présentation du jeu de données bank.csv**
 
 Il s'agit de l'ensemble de données de la banque marketing classique téléchargé à l'origine dans le référentiel UCI Machine Learning. L'ensemble de données vous donne des informations sur une campagne de marketing d'une institution financière dans laquelle vous devrez analyser afin de trouver des moyens de rechercher des stratégies futures afin d'améliorer les futures campagnes de marketing de la banque.
+
+Dans notre modèle, on cherche à comprendre quels sont les élements qui font qu'un client accepte d'investir dans la banque. 
