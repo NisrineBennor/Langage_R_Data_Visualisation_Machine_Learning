@@ -1,5 +1,5 @@
 ---
-title: "Cas_Pratique_MachineLearning_avecR"
+title: "Bank_MachineLearning_avecR"
 author: "Nisrine Bennor"
 output: html_document
 ---
