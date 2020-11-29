@@ -177,7 +177,7 @@ name_fastfood_10list=villes_10_fastfood %>%
 name_fastfood_10list
      
 
-### Barplot du FastFood qui représente les 10 fast food dans les 10 villes 
+### Barplot du FastFood qui représente les 10 fast food les plus présents dans les 10 villes 
 pdf("fastfood.pdf")
 g<-ggplot(name_fastfood_10list,aes(x=city,fill=name))+geom_bar()+theme_minimal()+
 ggtitle("Les 10 fastfoods les plus présent \n dans les 10 villes")+
