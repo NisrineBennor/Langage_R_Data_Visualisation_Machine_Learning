@@ -106,8 +106,6 @@ data_bank_entrainement_scaled=predict(data_preprocess_value,data_bank_entraineme
 data_bank_test_scaled=predict(data_preprocess_value,data_bank_test)
 head(data_bank_entrainement_scaled)
 
-# comment faire si on a des données deséquilibré comme pour la sourciption: Plus de non que de oui 
-# caret = downsample et upsample
 
 table(data_bank_entrainement_scaled[,"souscription"])
 set.seed(3033)
