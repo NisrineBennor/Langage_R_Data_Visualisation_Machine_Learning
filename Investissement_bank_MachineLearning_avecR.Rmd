@@ -49,6 +49,8 @@ g<- ggplot(bank_data,aes(y,fill=contact))+geom_bar()
 g
 
 
+## il y a beaucoup plus de non que de oui. 
+
 ```
 
 ### Géneration d'un jeu de donnée d'entrainement et d'un jeu de donnée test
