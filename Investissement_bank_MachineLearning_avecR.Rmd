@@ -78,24 +78,16 @@ dummy_variables_data$"y.yes"=NULL
 set.seed(3033)
 
 ## Création du jeu de données d'entrainement: 70% données d'entrainement et 30% pour les données test 
-
-taille_du_jeu_entrainement=floor(0.7*nrow(dummy_variables_data))
-head(taille_du_jeu_entrainement)
-nrow(dummy_variables_data)
-
-# création d'un jeu de donnée d'entrainement et de test
-
 set.seed(3033)
 taille_du_jeu_entrainement=floor(0.7*nrow(dummy_variables_data))
 head(taille_du_jeu_entrainement)
-nrow(dummy_variables_data)
-help(seq_len)
 
 ### récuperer aléatoirment 3164 clients 70% du jeu de données 
 indices=sample(seq_len(nrow(dummy_variables_data)), size = taille_du_jeu_entrainement)
 length(indices)
 head(indices)
 
+## je distingue mes 2 jeu de données : train et test 
 data_bank_entrainement=dummy_variables_data[indices,]
 data_bank_test=dummy_variables_data[-indices,]
 dim(data_bank_entrainement)
