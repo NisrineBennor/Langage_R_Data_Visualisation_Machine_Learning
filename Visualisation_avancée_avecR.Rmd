@@ -191,7 +191,7 @@ g
 
 ```
 
-### Rendre mon graphe interactif 
+### graph interactif 
 
 ```{r}
 #rendre mon praphe interactif
