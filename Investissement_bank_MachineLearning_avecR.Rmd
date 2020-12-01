@@ -137,8 +137,8 @@ table(data_bank_entrainement_scaled_upsample[,"souscription"])
 
 ### Modélisation avec Naives Bayes
 ```{r}
-# modélisation avec Naives Bayes
-## j'utilise le modèle de cross validation ou validation croisée qui génère une valeur de précision pour savoir si notre mosèle est bon ou pas sur nos données. 
+# modélisation avec Naives Bayes (3 fois)
+## j'utilise le modèle de cross validation ou validation croisée.
 
 set.seed(3033)
 trainControl_data=trainControl(method = "repeatedcv", number = 10,repeats = 3)
@@ -156,7 +156,7 @@ confusionMatrix(prediction_naive_bayes_desequilibree,as.factor(data_bank_test_sc
 head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
 ```
 
-### Modélisation avec Naives Bayes sur les données desequilibree
+### Modélisation avec Naives Bayes sur les données desequilibree (5 fois)
 ```{r}
 #modélisation avec Naives Bayes sur les données desequilibree
 set.seed(3033)
@@ -171,9 +171,14 @@ head(prediction_naive_bayes_desequilibree)
 # création de matrice de confusion: savoir si le modèle a bien prédit ou pas afin de comparer la prédiction au vrai réponse qui se trouve dans le jeu de données tests et dans la dernière colonne.  
 confusionMatrix(prediction_naive_bayes_desequilibree,as.factor(data_bank_test_scaled[,ncol(data_bank_test_scaled)]))
 head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
+
+## ce modèle n'arrive pas vraiement à trouver les clients qui peuvent souscrire au service de la banque. 
+## le modèle prédit mal puisqu'il n'arrive pas à detecter certains clients qui peuvent souscrire au service de la banque être appeler et qui peuvent souscrire.
+
+## et donc on teste sur les données équilibrées . 
 ```
 
-### Modélisation avec Naives Bayes sur les données downsamplé(sous_échantillonées)
+### Modélisation avec Naives Bayes sur les données downsamplé
 ```{r}
 #modélisation avec Naives Bayes sur les données downsamplé
 set.seed(3033)
@@ -185,9 +190,13 @@ print(naives_bayes_downsample)
 prediction_naive_bayes_downsample=predict(naives_bayes_downsample,newdata =data_bank_test_scaled[,-ncol(data_bank_test_scaled)])
 head(prediction_naive_bayes_downsample)
 
-# création de matrice de confusion: savoir si le modèle a bien prédit ou pas afin de comparer la prédiction au vrai réponse qui se trouve dans le jeu de données tests et dans la dernière colonne.  
+# création de matrice de confusion  
 confusionMatrix(prediction_naive_bayes_downsample,as.factor(data_bank_test_scaled[,ncol(data_bank_test_scaled)]))
 head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
+
+## en regardant l'accuracy, le modèle se trompe moins sur les données déséquilibrées 
+
+
 ```
 
 ### Modèle SVM
@@ -208,8 +217,29 @@ head(prediction_SVM_desequilibree)
 
 confusionMatrix(prediction_SVM_desequilibree,as.factor(data_bank_test_scaled[,ncol(data_bank_test_scaled)]))
 head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
-```
 
+### Le modèle SVM prédit mieux que le modèle précedent de Naive Bayes. 
+```
+### Modèle Random Forest
+
+```{r}
+set.seed(3033)
+trainControl_data=trainControl(method = "repeatedcv", number = 10,repeats = 3)
+RF_desequilibree=train(souscription ~., data=data_bank_entrainement_scaled, method="svmLinear", preProcess=NULL)
+print(RF_desequilibree)
+
+#prédiction avec notre modèle sur le jeu de donnée tests
+
+prediction_RF_desequilibree=predict(RF_desequilibree,newdata =data_bank_test_scaled[,-ncol(data_bank_test_scaled)])
+
+#création de matrice de confusion 
+
+head(prediction_RF_desequilibree)
+confusionMatrix(prediction_RF_desequilibree,as.factor(data_bank_test_scaled[,ncol(data_bank_test_scaled)]))
+head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
+
+## même le modèle Random Forest prédit aussi bien et on obtient des résultats satisfaisants. 
+```
 ### Quels variables jouent vraiment pour dire oui ou non à propos de la souscription?
 ### les variables prédictives qui ont plus d'impact sur la variable à prédire càd la souscription
 
@@ -217,6 +247,8 @@ head(data_bank_test_scaled[,ncol(data_bank_test_scaled)])
 varImp(naives_bayes_downsample, scale = F)
 
 ### la durée d'appel est une variable qui joue sur la souscription
+### La manière de contacter: par telephone , par fixe ou unknown  
+### ce dataset pourra être aussi améliorer puisqu'il contient beucoup de valeurs unknown
 ### par présence de crédit de maison ou non.....
 ### donc il existe plusieurs variables. 
 ```
